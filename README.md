@@ -1,1 +1,1 @@
-# Resnet-for-MNIST-in-C-
+# Resnet-for-MNIST-in-C++
