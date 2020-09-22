@@ -7,7 +7,7 @@
 PC: ASUS S400C  
 OS: Ubuntu 18.04  
 IDE: Qt Creator 5.8 
-Pytorch 3.6.10
-Libtorch 1.5.0(CPU ONLY)
-Torchvision 0.6.0
+Pytorch 3.6.10  
+Libtorch 1.5.0(CPU ONLY)  
+Torchvision 0.6.0  
 
