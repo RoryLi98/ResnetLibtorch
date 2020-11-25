@@ -150,8 +150,8 @@ def resnet18(pretrained=False, **kwargs):
     return model
 net  = resnet18()
 
-model =torch.load("net_cpu_Adam_cross_B20_S200_E5.pth")
-
+# model =torch.load("net_cpu_Adam_cross_B20_S200_E5.pth")
+model =torch.load("Resnet_MNIST_GPU_Adam_cross_E4_B32_GTX950.pth")
 model.eval()
 
 # An example input you would normally provide to your model's forward() method.

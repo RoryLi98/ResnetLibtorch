@@ -5,6 +5,7 @@ import torch.utils.data as Data
 import math
 import numpy as np
 import cv2
+import datetime
 from time import time
 from torch.autograd import Variable
 from torchvision.transforms import Compose, ToTensor, Resize
@@ -156,7 +157,7 @@ net = net.to(device)
 
 optimizer = torch.optim.Adam(net.parameters(), lr=0.01)
 loss_func = torch.nn.CrossEntropyLoss()
-for epoch in range(5):
+for epoch in range(3):
     for step, (batch_x, batch_y) in enumerate(loader):
         b_x = Variable(batch_x).to(device)
         b_y = Variable(batch_y).to(device)
@@ -167,12 +168,14 @@ for epoch in range(5):
         loss.backward()
         optimizer.step()
         
-        if step % 50 == 0: 
+        if step % 100 == 0: 
             print('epoch:{}, step:{}, loss:{}'.format(epoch, step, loss))
+            print(datetime.datetime.now())
 
         # if step==500:
         #     break
 net.eval()
 # torch.save(net,'net_cpu_Adam_cross_B20_S400.pth')
-torch.save(net,'Resnet_MNIST_GPU_Adam_cross_E6_B32_GTX950.pth')
+torch.save(net,'Resnet_MNIST_GPU_Adam_cross_E4_B32_GTX950.pth')
 print("All Done")
+print(datetime.datetime.now())
