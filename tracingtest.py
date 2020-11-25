@@ -151,8 +151,11 @@ def resnet18(pretrained=False, **kwargs):
 
 net  = resnet18()
 
-model =torch.load("/home/link/NetworkModel1/net_cpu_Adam_cross_B20_S200_E5.pth")
+# model =torch.load("/home/link/NetworkModel1/net_cpu_Adam_cross_B20_S200_E5.pth")
+model =torch.load("Resnet_MNIST_GPU_Adam_cross_E4_B32_GTX950.pth")
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # GPU MOD
+model = model.to(device)                                                 # GPU MOD
 model.eval()
 script_module = torch.jit.script(model)
 #script_module.save("model1111.pt")
@@ -162,8 +165,10 @@ example = torch.ones(1, 1, 224, 224)
 
 # Use torch.jit.trace to generate a torch.jit.ScriptModule via tracing.
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-img_cv = cv2.imread("/home/link/NetworkModel1/C++/5.png") 
+# img_cv = cv2.imread("/home/link/NetworkModel1/C++/5.png") 
+img_cv = cv2.imread("D:\\Github\\Resnet-Libtorch\\C++\\5.png") 
 
 img_gray = cv2.cvtColor(img_cv,cv2.COLOR_RGB2GRAY)
 img_np = cv2.resize(img_gray, (224, 224))
@@ -189,6 +194,8 @@ start = time()
 #print(y.dtype)
 example = torch.ones(1, 1, 224, 224)
 #print(img_np1)
+
+img_np1 = img_np1.to(device)    # GPU MOD
 
 output1 = model(img_np1)
 stop = time()
