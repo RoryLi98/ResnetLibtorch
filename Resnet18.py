@@ -37,7 +37,7 @@ test_data = torchvision.datasets.MNIST(
 )
 
 
-BATCH_SIZE = 20
+BATCH_SIZE = 32
 
 '''
 进行批处理
@@ -45,7 +45,7 @@ BATCH_SIZE = 20
 loader = Data.DataLoader(dataset=train_data,
                         batch_size=BATCH_SIZE,
                         shuffle=True,
-                        num_workers=2)
+                        num_workers=0)
 
 '''
 定义resnet18
@@ -149,15 +149,17 @@ def resnet18(pretrained=False, **kwargs):
         model.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
     return model
 
-net  = resnet18()
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+net = resnet18()
+net = net.to(device)
 
 optimizer = torch.optim.Adam(net.parameters(), lr=0.01)
 loss_func = torch.nn.CrossEntropyLoss()
 for epoch in range(5):
     for step, (batch_x, batch_y) in enumerate(loader):
-        b_x = Variable(batch_x)
-        b_y = Variable(batch_y)
+        b_x = Variable(batch_x).to(device)
+        b_y = Variable(batch_y).to(device)
         predict = net(b_x) 
         loss = loss_func(predict, b_y)
         
@@ -165,14 +167,12 @@ for epoch in range(5):
         loss.backward()
         optimizer.step()
         
-        if step % 5 == 0: 
+        if step % 50 == 0: 
             print('epoch:{}, step:{}, loss:{}'.format(epoch, step, loss))
-            #print(predict)
-        if step==500:
-            break
+
+        # if step==500:
+        #     break
 net.eval()
-torch.save(net,'net_cpu_Adam_cross_B20_S400.pth')
+# torch.save(net,'net_cpu_Adam_cross_B20_S400.pth')
+torch.save(net,'Resnet_MNIST_GPU_Adam_cross_E6_B32_GTX950.pth')
 print("All Done")
-
-
-
