@@ -25,7 +25,7 @@ train_data = torchvision.datasets.FashionMNIST(
     train=True,  # this is training data
     transform=input_transform(),    # 转换 PIL.Image or numpy.ndarray 成
                                                     # torch.FloatTensor (C x H x W), 训练的时候 normalize 成 [0.0, 1.0] 区间
-    download=True
+    download=False
 ,          # 没下载就下载, 下载了就不用再下了
 )
 
@@ -34,7 +34,7 @@ test_data = torchvision.datasets.FashionMNIST(
     train=False,  # this is training data
     transform=input_transform(),    # 转换 PIL.Image or numpy.ndarray 成
                                                     # torch.FloatTensor (C x H x W), 训练的时候 normalize 成 [0.0, 1.0] 区间
-    download=True,          # 没下载就下载, 下载了就不用再下了
+    download=False,          # 没下载就下载, 下载了就不用再下了
 )
 
 
@@ -157,7 +157,7 @@ net = net.to(device)
 
 optimizer = torch.optim.Adam(net.parameters(), lr=0.01)
 loss_func = torch.nn.CrossEntropyLoss()
-for epoch in range(3):
+for epoch in range(5):
     for step, (batch_x, batch_y) in enumerate(loader):
         b_x = Variable(batch_x).to(device)
         b_y = Variable(batch_y).to(device)
@@ -176,6 +176,6 @@ for epoch in range(3):
         #     break
 net.eval()
 # torch.save(net,'net_cpu_Adam_cross_B20_S400.pth')
-torch.save(net,'Resnet_MNIST_GPU_Adam_cross_E4_B32_GTX950.pth')
+torch.save(net,'Resnet_Fashion-MNIST_GPU_Adam_cross_E6_B32_GTX950.pth')
 print("All Done")
 print(datetime.datetime.now())
