@@ -11,42 +11,6 @@ from torchvision.transforms import Compose, ToTensor, Resize
 import gc
 gc.collect()
 
-#对输入图像进行处理，转换为（224，224）,因为resnet18要求输入为（224，224），并转化为tensor
-def input_transform():
-    return Compose([
-                Resize(224),   #改变尺寸
-                ToTensor(),      #变成tensor
-                ])
-
-# Mnist 手写数字，数据导入
-train_data = torchvision.datasets.MNIST(
-    root='./mnist/',    # 保存或者提取位置
-    train=True,  # this is training data
-    transform=input_transform(),    # 转换 PIL.Image or numpy.ndarray 成
-                                                    # torch.FloatTensor (C x H x W), 训练的时候 normalize 成 [0.0, 1.0] 区间
-    download=False
-,          # 没下载就下载, 下载了就不用再下了
-)
-
-test_data = torchvision.datasets.MNIST(
-    root='./mnist/',    # 保存或者提取位置
-    train=False,  # this is training data
-    transform=input_transform(),    # 转换 PIL.Image or numpy.ndarray 成
-                                                    # torch.FloatTensor (C x H x W), 训练的时候 normalize 成 [0.0, 1.0] 区间
-    download=False,          # 没下载就下载, 下载了就不用再下了
-)
-
-
-BATCH_SIZE = 20
-
-'''
-进行批处理
-'''
-loader = Data.DataLoader(dataset=train_data,
-                        batch_size=BATCH_SIZE,
-                        shuffle=True,
-                        num_workers=2)
-
 '''
 定义resnet18
 '''
@@ -149,66 +113,66 @@ def resnet18(pretrained=False, **kwargs):
         model.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
     return model
 
-net  = resnet18()
-
-# model =torch.load("/home/link/NetworkModel1/net_cpu_Adam_cross_B20_S200_E5.pth")
-model =torch.load("Resnet_MNIST_GPU_Adam_cross_E4_B32_GTX950.pth")
-
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # GPU MOD
-model = model.to(device)                                                 # GPU MOD
-model.eval()
-script_module = torch.jit.script(model)
-#script_module.save("model1111.pt")
-
-# An example input you would normally provide to your model's forward() method.
-example = torch.ones(1, 1, 224, 224)
-
-# Use torch.jit.trace to generate a torch.jit.ScriptModule via tracing.
+#====================================================================================================================
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-# img_cv = cv2.imread("/home/link/NetworkModel1/C++/5.png") 
-img_cv = cv2.imread("D:\\Github\\Resnet-Libtorch\\C++\\5.png") 
+# model =torch.load("/home/link/NetworkModel1/net_cpu_Adam_cross_B20_S200_E5.pth")                  #Ubuntu
+model =torch.load("D:\\Github\\Resnet-Libtorch\\Resnet_MNIST_GPU_Adam_cross_E3_B32_GTX950.pth")     #Windows GPU
+# model =torch.load("D:\\Github\\Resnet-Libtorch\\Resnet_MNIST_CPU_Adam_cross_E5_B20_S400.pth")       #Windows CPU
 
+model = model.to(device)                                                 # GPU MOD
+model.eval()
+script_model = torch.jit.script(model)
+script_model.save("MNIST-GPU.pt")
+
+# Use torch.jit.trace to generate a torch.jit.ScriptModule via tracing.
+
+# img_cv = cv2.imread("/home/link/NetworkModel1/C++/5.png")               #Ubuntu
+img_cv = cv2.imread("D:\\Github\\Resnet-Libtorch\\Example\\5.png")            #Windows
 img_gray = cv2.cvtColor(img_cv,cv2.COLOR_RGB2GRAY)
 img_np = cv2.resize(img_gray, (224, 224))
-img_np = np.expand_dims(img_np ,axis=0)
-img_tensor = torch.from_numpy(img_np)
-tensor_cv = torch.from_numpy(img_np)
+img_np = np.expand_dims(img_np ,axis=0)                                   # appear at the axis position in the expanded array shape.
+
+tensor_cv = torch.from_numpy(img_np)                                      # Mat 2 Tensor
+
 img_np1=tensor_cv.unsqueeze(0)
-print("形状：", img_cv.shape)
-print("维数：", img_cv.ndim)
-print("形状：", img_np.shape)
-print("维数：", img_np.ndim)
-print("img_np1维数：", img_np1.size())
-##
+print("img_cv.shape：", img_cv.shape)
+print("img_cv.ndim：", img_cv.ndim)
+print("img_np.shape：", img_np.shape)
+print("img_np.ndim：", img_np.ndim)
+print("tensor_cv.size：", tensor_cv.size())
+print("img_np1.size：", img_np1.size())
 img_np1 = img_np1.float()
 img_np1 = img_np1.div(255)
-#cv2.imshow("img_gray",img_gray)
-#cv2.waitKey(0)
-#print(img_np1)
+
+img_np1 = img_np1.to(device)                                               # GPU MOD
+print("-------------------------")
+print("SourceModel:")
 start = time()
-##y=torch.rand(1,1,224,224)
-#print(y)
-#print("img_np1维数：", y.size())
-#print(y.dtype)
-example = torch.ones(1, 1, 224, 224)
-#print(img_np1)
-
-img_np1 = img_np1.to(device)    # GPU MOD
-
 output1 = model(img_np1)
 stop = time()
-print(str(stop-start) + "s")
-
+print("UsingTime:"+str(stop-start) + "s")
 print(output1)
-
 print(output1.max(1))
 
-print("=====================")
-output = script_module(img_np1)
-print(str(stop-start) + "s")
-
+print("-------------------------")
+print("ScriptModel:")
+start = time()
+output = script_model(img_np1)
+stop = time()
+print("UsingTime:"+str(stop-start) + "s")
 print(output)
-
 print(output.max(1))
+
+# Label	Description
+# 0	    0
+# 1	    1
+# 2	    2
+# 3	    3
+# 4	    4
+# 5	    5
+# 6	    6
+# 7	    7
+# 8	    8
+# 9	    9
