@@ -1,4 +1,4 @@
-# Resnet-for-MNIST-in-C++
+# Resnet-for-MNIST-in-C++(利用LibTorch部署PyTorch模型实例，停止更新)
 
 <div align=center><img src="https://github.com/LinkLiar/ImageStorage/blob/master/SchoolBadge.png" width="200" height="265"/><img src="https://github.com/LinkLiar/ImageStorage/blob/master/CollegeBadge.png" width="200" height="265"/></div>
 
