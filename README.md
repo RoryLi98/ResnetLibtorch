@@ -1,4 +1,4 @@
-# Resnet-for-MNIST-in-C++(利用LibTorch部署PyTorch模型实例，停止更新)
+# Deploy Pytorch Model in C++ Using Libtorch (Archived)
 
 <div align=center><img src="https://github.com/LinkLiar/ImageStorage/blob/master/SchoolBadge.png" width="200" height="265"/><img src="https://github.com/LinkLiar/ImageStorage/blob/master/CollegeBadge.png" width="200" height="265"/></div>
 
@@ -16,10 +16,10 @@ Desktop:
 OS: Windows 10 Professional  
 CPU: I5-4590  
 GPU: GTX950  
-IDE: Visual Studio Code + Anaconda  
+IDE: Visual Studio Code + Anaconda Prompt  
 Python 3.6.12    
-Pytorch 1.4.0 py3.6_cuda101_cudnn7_0     
-Torchvision 0.5.0 py36_cu101   
+Pytorch 1.4.0 build:py3.6_cuda101_cudnn7_0     
+Torchvision 0.5.0 build:py36_cu101   
 OpenCV(Python) 3.4.2   
 
 
